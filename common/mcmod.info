@@ -1,0 +1,15 @@
+[
+{
+  "modid": "MagicClover",
+  "name": "Magic Clover",
+  "description": "Magic clover!",
+  "version": "@VERSION@",
+  "logoFile": "/logo.png",
+  "updateUrl": "",
+  "authors": ["konwboj"],
+  "credits": "",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
