@@ -1,7 +1,7 @@
 package clover.common.core;
 
-import clover.common.items.Clover;
 import net.minecraft.item.Item;
+import clover.common.items.Clover;
 
 public class CommonProxy
 {
@@ -10,7 +10,7 @@ public class CommonProxy
 	
 	public void init()
 	{
-		clover = new Clover(cloverID);
+		clover = new Clover(cloverID, 6, 2, false);
 	}
 	
 	public void initClient()

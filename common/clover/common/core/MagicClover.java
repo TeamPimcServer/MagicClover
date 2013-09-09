@@ -1,9 +1,7 @@
 package clover.common.core;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import clover.common.creativetab.CreativeTabClover;
 import clover.common.util.Configuration;
 import clover.common.util.References;
 import cpw.mods.fml.common.Mod;
@@ -24,8 +22,6 @@ public class MagicClover
 
 	@Instance(References.MOD_ID)
 	public static MagicClover instance;
-
-	public static CreativeTabs creativeTab = new CreativeTabClover(CreativeTabs.getNextID(), References.MOD_ID);
 
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event)
