@@ -1,4 +1,4 @@
-Magic-Clover
+MagicClover
 ============
 
 Magic Clover mod for Minecraft
