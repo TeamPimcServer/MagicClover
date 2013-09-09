@@ -35,7 +35,7 @@ public class Clover extends ItemFood
 			if (player.isSneaking())
 			{
 				int randomID = world.rand.nextInt(400);
-				int rare = world.rand.nextInt(7);
+				int rare = world.rand.nextInt(6);
 
 				if (isValidItem(randomID))
 				{
