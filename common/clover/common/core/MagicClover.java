@@ -35,7 +35,7 @@ public class MagicClover
 	@EventHandler
 	public static void init(FMLInitializationEvent event)
 	{
-		MinecraftForge.addGrassSeed(new ItemStack(CommonProxy.cloverID + 256, 1, 0), 30);
+		MinecraftForge.addGrassSeed(new ItemStack(CommonProxy.cloverID + 256, 1, 0), 12);
 	}
 
 	@EventHandler

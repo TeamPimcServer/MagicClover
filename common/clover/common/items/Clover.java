@@ -23,7 +23,6 @@ public class Clover extends ItemFood
 		setTextureName("magicclover:clover");
 		setCreativeTab(CreativeTabs.tabFood);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(this, behavior);
-		setFull3D();
 	}
 
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player)
