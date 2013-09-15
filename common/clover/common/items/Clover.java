@@ -12,7 +12,7 @@ import clover.common.dispenser.BehaviorDispenseClover;
 
 public class Clover extends ItemFood
 {
-	Integer[] bannedItemIDs = { 10, 30, 150, 9, 8, 11, 132, 60, 149, 106, 63, 26, 120, 36, 118, 104, 142, 95, 93, 117, 105, 119, 140, 83, 137, 7, 34, 55, 68, 115, 383, 90, 71, 59, 64, 32, 52, 141, 127, 94, 403, 131, 87, 1, 3, 4, 12, 13, 31 };
+	Integer[] bannedItemIDs = { 10, 30, 150, 9, 8, 11, 132, 60, 149, 106, 63, 26, 120, 36, 118, 104, 142, 95, 93, 117, 105, 119, 140, 83, 137, 7, 34, 55, 68, 115, 383, 90, 71, 59, 64, 32, 52, 141, 127, 94, 403, 131, 87, 31, 1, 3, 4, 12, 13 };
 	Integer[] rareItemIDs = { 122, 138, 399, 57, 19, 133, 116, 120, 130, 84, 329, 322, 277, 278, 279, 276, 264, 388, 381, 310, 311, 312, 313, 293 };
 	private static final IBehaviorDispenseItem behavior = new BehaviorDispenseClover();
 

@@ -25,7 +25,7 @@ public class MagicClover
 
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event)
-	{
+	{	
 		MinecraftForge.EVENT_BUS.register(new clover.common.handlers.EventHandler());
 		Configuration.init(event.getSuggestedConfigurationFile());
 		proxy.init();
@@ -35,7 +35,7 @@ public class MagicClover
 	@EventHandler
 	public static void init(FMLInitializationEvent event)
 	{
-		MinecraftForge.addGrassSeed(new ItemStack(CommonProxy.cloverID + 256, 1, 0), 12);
+		MinecraftForge.addGrassSeed(new ItemStack(CommonProxy.cloverID + 256, 1, 0), Configuration.chance);
 	}
 
 	@EventHandler
