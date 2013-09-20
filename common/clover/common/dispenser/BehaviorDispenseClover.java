@@ -9,11 +9,13 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import clover.common.core.CommonProxy;
 import clover.common.util.Registry;
 
 public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
@@ -60,7 +62,7 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 				} else
 				{
 					--item.stackSize;
-					doDispense(world, new ItemStack(CommonProxy.cloverID + 256, 1, 0), 0, enumfacing, iposition);
+					ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), iposition.getX(), iposition.getY(), iposition.getZ());
 				}
 			}
 		}else

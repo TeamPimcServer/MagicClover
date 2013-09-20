@@ -8,8 +8,11 @@ import java.util.Random;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import clover.common.dispenser.BehaviorDispenseClover;
@@ -68,8 +71,7 @@ public class Clover extends ItemFood
 						player.inventory.consumeInventoryItem(itemID);
 					} else
 					{
-						player.dropPlayerItem(new ItemStack(itemID, 1, 0));
-						player.inventory.consumeInventoryItem(itemID);
+						ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), player.posX, player.posY, player.posZ);
 					}
 				}
 			}
