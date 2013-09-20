@@ -1,50 +1,66 @@
 package clover.common.dispenser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.dispenser.IPosition;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import clover.common.core.CommonProxy;
+import clover.common.util.Registry;
 
 public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 {
-	Integer[] bannedItemIDs = { 10, 30, 150, 9, 8, 11, 132, 60, 149, 106, 63, 26, 120, 36, 118, 104, 142, 95, 93, 117, 105, 119, 140, 83, 137, 7, 34, 55, 68, 115, 383, 90, 71, 59, 64, 32, 52, 141, 127, 94, 403, 131, 87, 1, 3, 4, 12, 13, 31 };
-	Integer[] rareItemIDs = { 122, 138, 399, 57, 19, 133, 116, 120, 130, 84, 329, 322, 277, 278, 279, 276, 264, 388, 381, 310, 311, 312, 313 };
-
 	@Override
 	protected ItemStack dispenseStack(IBlockSource source, ItemStack item)
 	{
 		EnumFacing enumfacing = BlockDispenser.getFacing(source.getBlockMetadata());
+		IPosition iposition = BlockDispenser.getIPositionFromBlockSource(source);
 		World world = source.getWorld();
-		int x = source.getXInt() + enumfacing.getFrontOffsetX();
-		int y = source.getYInt() + enumfacing.getFrontOffsetY();
-		int z = source.getZInt() + enumfacing.getFrontOffsetZ();
 
 		if (!world.isRemote)
 		{
-			int randomID = world.rand.nextInt(400);
-			int rare = world.rand.nextInt(5);
-			if (isValidItem(randomID))
+			List<Integer> list = new ArrayList<Integer>();
+
+			for (int i = 0; i < Item.itemsList.length; i++)
 			{
-				if (!isRareItem(randomID))
+				if (Item.itemsList[i] != null)
 				{
-					if (isBannedItem(randomID) == false)
-					{
-						--item.stackSize;
-						EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(randomID, 1, 0));
-						world.spawnEntityInWorld(entityItem);
-					}
+					list.add(Item.itemsList[i].itemID);
+				}
+			}
+
+			list.removeAll(Arrays.asList(0, null));
+			list.removeAll(Arrays.asList(Registry.bannedItemIDs));
+
+			Random rand = new Random();
+			int randomID = rand.nextInt(list.size());
+			int rare = rand.nextInt(3);
+
+			if (!isRareItem(list.get(randomID)))
+			{
+				if (isBannedItem(list.get(randomID)) == false)
+				{
+					--item.stackSize;
+					doDispense(world, new ItemStack(list.get(randomID), 1, 0), 0, enumfacing, iposition);
+				}
+			} else
+			{
+				if (rare == 1)
+				{
+					--item.stackSize;
+					doDispense(world, new ItemStack(list.get(randomID), 1, 0), 0, enumfacing, iposition);
 				} else
 				{
-					if (rare == 1)
-					{
-						--item.stackSize;
-						EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(randomID, 1, 0));
-						world.spawnEntityInWorld(entityItem);
-					}
+					--item.stackSize;
+					doDispense(world, new ItemStack(CommonProxy.cloverID + 256, 1, 0), 0, enumfacing, iposition);
 				}
 			}
 		}else
@@ -57,9 +73,9 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 
 	public boolean isBannedItem(int id)
 	{
-		for (int i = 0; i < bannedItemIDs.length; i++)
+		for (int i = 0; i < Registry.bannedItemIDs.size(); i++)
 		{
-			if (bannedItemIDs[i] == id)
+			if (Registry.bannedItemIDs.get(i) == id)
 			{
 				return true;
 			}
@@ -70,25 +86,14 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 
 	public boolean isRareItem(int id)
 	{
-		for (int i = 0; i < rareItemIDs.length; i++)
+		for (int i = 0; i < Registry.rareItemIDs.size(); i++)
 		{
-			if (rareItemIDs[i] == id)
+			if (Registry.rareItemIDs.get(i) == id)
 			{
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	public boolean isValidItem(int id)
-	{
-		if (Item.itemsList[id] == null)
-		{
-			return false;
-		} else
-		{
-			return true;
-		}
 	}
 }

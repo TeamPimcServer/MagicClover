@@ -1,6 +1,7 @@
 package clover.client.render;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -22,7 +23,7 @@ public class RenderCloverItem implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		if (type == ItemRenderType.ENTITY && !item.isOnItemFrame() || type == ItemRenderType.EQUIPPED)
+		if (type == ItemRenderType.ENTITY && !RenderItem.renderInFrame || type == ItemRenderType.EQUIPPED)
 		{
 			return true;
 		} else
