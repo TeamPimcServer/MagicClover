@@ -9,6 +9,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void initClient()
 	{
-		MinecraftForgeClient.registerItemRenderer(CommonProxy.cloverID + 256, new RenderCloverItem());
+		MinecraftForgeClient.registerItemRenderer(CommonProxy.clover, new RenderCloverItem());
 	}
 }

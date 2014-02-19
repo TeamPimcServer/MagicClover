@@ -1,7 +1,5 @@
 package clover.common.core;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import clover.common.util.Configuration;
 import clover.common.util.References;
 import cpw.mods.fml.common.Mod;
@@ -11,10 +9,10 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = References.MOD_VERSION, useMetadata = true)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MagicClover
 {
 	@SidedProxy(clientSide = References.CLIENT_PROXY, serverSide = References.COMMON_PROXY)
@@ -25,7 +23,7 @@ public class MagicClover
 
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event)
-	{	
+	{
 		MinecraftForge.EVENT_BUS.register(new clover.common.handlers.EventHandler());
 		Configuration.init(event.getSuggestedConfigurationFile());
 		proxy.init();
@@ -35,12 +33,12 @@ public class MagicClover
 	@EventHandler
 	public static void init(FMLInitializationEvent event)
 	{
-		MinecraftForge.addGrassSeed(new ItemStack(CommonProxy.cloverID + 256, 1, 0), Configuration.chance);
+		MinecraftForge.addGrassSeed(new ItemStack(CommonProxy.clover, 1, 0), Configuration.chance);
 	}
 
 	@EventHandler
 	public static void modLoaded(FMLPostInitializationEvent event)
 	{
-		
+
 	}
 }

@@ -1,10 +1,7 @@
 package clover.common.dispenser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import clover.common.util.Registry;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -16,26 +13,30 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import clover.common.util.Registry;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 {
 	@Override
 	protected ItemStack dispenseStack(IBlockSource source, ItemStack item)
 	{
-		EnumFacing enumfacing = BlockDispenser.getFacing(source.getBlockMetadata());
-		IPosition iposition = BlockDispenser.getIPositionFromBlockSource(source);
+		EnumFacing enumfacing = BlockDispenser.func_149937_b(source.getBlockMetadata());
+		IPosition iposition = BlockDispenser.func_149939_a(source);
 		World world = source.getWorld();
 
 		if (!world.isRemote)
 		{
 			List<Integer> list = new ArrayList<Integer>();
 
-			for (int i = 0; i < Item.itemsList.length; i++)
+			for (int i = 0; i < GameData.itemRegistry.getKeys().toArray().length; i++)
 			{
-				if (Item.itemsList[i] != null)
+				if (GameData.itemRegistry.getKeys().toArray()[i] != null)
 				{
-					list.add(Item.itemsList[i].itemID);
+					list.add(Item.getIdFromItem(GameData.itemRegistry.get((String) GameData.itemRegistry.getKeys().toArray()[i])));
 				}
 			}
 
@@ -44,28 +45,38 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 
 			Random rand = new Random();
 			int randomID = rand.nextInt(list.size());
+			int creeper = rand.nextInt(50);
 			int rare = rand.nextInt(3);
 
-			if (!isRareItem(list.get(randomID)))
+			if (creeper == 0)
 			{
-				if (isBannedItem(list.get(randomID)) == false)
-				{
-					--item.stackSize;
-					doDispense(world, new ItemStack(list.get(randomID), 1, 0), 0, enumfacing, iposition);
-				}
+				--item.stackSize;
+				ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), iposition.getX(), iposition.getY(), iposition.getZ());
 			} else
 			{
-				if (rare == 1)
+				if (!isRareItem(list.get(randomID)))
 				{
-					--item.stackSize;
-					doDispense(world, new ItemStack(list.get(randomID), 1, 0), 0, enumfacing, iposition);
+					if (isBannedItem(list.get(randomID)) == false)
+					{
+						--item.stackSize;
+						doDispense(world, new ItemStack(Item.getItemById(list.get(randomID)), 1, 0), 0, enumfacing, iposition);
+					} else
+					{
+						this.dispenseStack(source, item);
+					}
 				} else
 				{
-					--item.stackSize;
-					ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), iposition.getX(), iposition.getY(), iposition.getZ());
+					if (rare == 1)
+					{
+						--item.stackSize;
+						doDispense(world, new ItemStack(Item.getItemById(list.get(randomID)), 1, 0), 0, enumfacing, iposition);
+					} else
+					{
+						this.dispenseStack(source, item);
+					}
 				}
 			}
-		}else
+		} else
 		{
 			this.dispenseStack(source, item);
 		}

@@ -13,11 +13,12 @@ import org.lwjgl.opengl.GL11;
 public class RenderCloverItem implements IItemRenderer
 {
 	public ResourceLocation texture = new ResourceLocation("magicclover", "model/clover.png");
+	public ResourceLocation modelFile = new ResourceLocation("magicclover", "model/clover.tcn");
 	public IModelCustom model;
 
 	public RenderCloverItem()
 	{
-		model = AdvancedModelLoader.loadModel("/assets/magicclover/model/clover.tcn");
+		model = AdvancedModelLoader.loadModel(modelFile);
 	}
 
 	@Override

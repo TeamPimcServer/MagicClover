@@ -1,30 +1,32 @@
 package clover.common.items;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import clover.common.dispenser.BehaviorDispenseClover;
+import clover.common.util.Registry;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import clover.common.dispenser.BehaviorDispenseClover;
-import clover.common.util.Registry;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class Clover extends ItemFood
 {
 	private static final IBehaviorDispenseItem behavior = new BehaviorDispenseClover();
 
-	public Clover(int id, int healAmount, int saturation, boolean isWolfsFavoriteMeat)
+	public Clover(int healAmount, int saturation, boolean isWolfsFavoriteMeat)
 	{
-		super(id, healAmount, saturation, isWolfsFavoriteMeat);
+		super(healAmount, saturation, isWolfsFavoriteMeat);
 		setUnlocalizedName("clover");
 		setTextureName("magicclover:clover");
 		setCreativeTab(CreativeTabs.tabFood);
@@ -33,19 +35,17 @@ public class Clover extends ItemFood
 
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player)
 	{
-		super.onItemRightClick(item, world, player);
-
 		if (!world.isRemote)
 		{
 			if (player.isSneaking())
 			{
 				List<Integer> list = new ArrayList<Integer>();
 
-				for (int i = 0; i < itemsList.length; i++)
+				for (int i = 0; i < GameData.itemRegistry.getKeys().size(); i++)
 				{
-					if (itemsList[i] != null)
+					if (GameData.itemRegistry.getKeys().toArray()[i] != null)
 					{
-						list.add(itemsList[i].itemID);
+						list.add(Item.getIdFromItem(GameData.itemRegistry.get((String) GameData.itemRegistry.getKeys().toArray()[i])));
 					}
 				}
 
@@ -54,25 +54,41 @@ public class Clover extends ItemFood
 
 				Random rand = new Random();
 				int randomID = rand.nextInt(list.size());
+				int creeper = rand.nextInt(50);
 				int rare = rand.nextInt(3);
 
-				if (!isRareItem(list.get(randomID)))
+				if (creeper == 0)
 				{
-					if (isBannedItem(list.get(randomID)) == false)
-					{
-						player.dropPlayerItem(new ItemStack(list.get(randomID), 1, 0));
-						player.inventory.consumeInventoryItem(itemID);
-					}
+					ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), player.posX, player.posY, player.posZ);
 				} else
 				{
-					if (rare == 1)
+					if (!isRareItem(list.get(randomID)))
 					{
-						player.dropPlayerItem(new ItemStack(list.get(randomID), 1, 0));
-						player.inventory.consumeInventoryItem(itemID);
+						if (isBannedItem(list.get(randomID)) == false)
+						{
+							player.dropPlayerItemWithRandomChoice(new ItemStack(Item.getItemById(list.get(randomID)), 1, 0), true);
+							player.inventory.consumeInventoryItem(this);
+						} else
+						{
+							this.onItemRightClick(item, world, player);
+						}
 					} else
 					{
-						ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), player.posX, player.posY, player.posZ);
+						if (rare == 1)
+						{
+							player.dropPlayerItemWithRandomChoice(new ItemStack(Item.getItemById(list.get(randomID)), 1, 0), true);
+							player.inventory.consumeInventoryItem(this);
+						} else
+						{
+							this.onItemRightClick(item, world, player);
+						}
 					}
+				}
+			} else
+			{
+				if (player.canEat(false))
+				{
+					player.setItemInUse(item, this.getMaxItemUseDuration(item));
 				}
 			}
 		}
