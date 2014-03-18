@@ -1,8 +1,10 @@
 package clover.common.items;
 
 import clover.common.dispenser.BehaviorDispenseClover;
+import clover.common.util.Configuration;
 import clover.common.util.Registry;
 import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
@@ -54,7 +56,7 @@ public class Clover extends ItemFood
 
 				Random rand = new Random();
 				int randomID = rand.nextInt(list.size());
-				int creeper = rand.nextInt(50);
+				int creeper = rand.nextInt(35);
 				int rare = rand.nextInt(3);
 
 				if (creeper == 0)
@@ -98,27 +100,11 @@ public class Clover extends ItemFood
 
 	public boolean isBannedItem(int id)
 	{
-		for (int i = 0; i < Registry.bannedItemIDs.size(); i++)
-		{
-			if (Registry.bannedItemIDs.get(i) == id)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Registry.bannedItemIDs.contains(id);
 	}
 
 	public boolean isRareItem(int id)
 	{
-		for (int i = 0; i < Registry.rareItemIDs.size(); i++)
-		{
-			if (Registry.rareItemIDs.get(i) == id)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Registry.rareItemIDs.contains(id);
 	}
 }

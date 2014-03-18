@@ -45,7 +45,7 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 
 			Random rand = new Random();
 			int randomID = rand.nextInt(list.size());
-			int creeper = rand.nextInt(50);
+			int creeper = rand.nextInt(35);
 			int rare = rand.nextInt(3);
 
 			if (creeper == 0)
@@ -86,27 +86,11 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 
 	public boolean isBannedItem(int id)
 	{
-		for (int i = 0; i < Registry.bannedItemIDs.size(); i++)
-		{
-			if (Registry.bannedItemIDs.get(i) == id)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Registry.bannedItemIDs.contains(id);
 	}
 
 	public boolean isRareItem(int id)
 	{
-		for (int i = 0; i < Registry.rareItemIDs.size(); i++)
-		{
-			if (Registry.rareItemIDs.get(i) == id)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Registry.rareItemIDs.contains(id);
 	}
 }

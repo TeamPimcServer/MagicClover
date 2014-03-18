@@ -13,10 +13,7 @@ public class CommonProxy
 	public void init()
 	{
 		clover = new Clover(6, 2, false);
-
 		GameRegistry.registerItem(clover, "magic_clover");
-		
-		Registry.init();
 	}
 	
 	public void initClient()
