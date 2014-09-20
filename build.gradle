@@ -30,4 +30,21 @@ sourceSets
 
 archivesBaseName = "magicclover"
 version = "0.5"
-minecraft.version = "1.7.2-10.12.0.1047"
+
+minecraft {
+	version = "1.7.2-10.12.0.1047"
+	replace "@VERSION@", project.version
+	replaceIn "MagicClover.java"
+}
+
+processResources
+{
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version
+    }
+		
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

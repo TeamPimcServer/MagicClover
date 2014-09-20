@@ -19,7 +19,7 @@ public class Configuration
 			config.load();
 
 			Property rare = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Rare Items", Registry.defaultRare);
-			rare.comment = "Supports item names and numeric IDs (support for numeric IDs will be removed in near future)!";
+			rare.comment = "Supports item names (like minecraft:nether_star) and numeric IDs (support for numeric IDs will be removed in near future)!";
 			if (rare.isList())
 			{
 				String[] items = rare.getStringList();
@@ -41,7 +41,7 @@ public class Configuration
 			}
 
 			Property banned = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Banned Items", Registry.defaultBanned);
-			banned.comment = "Supports item names and numeric IDs (support for numeric IDs will be removed in near future)!";
+			banned.comment = "Supports item names (like minecraft:stone) and numeric IDs (support for numeric IDs will be removed in near future)!";
 			if (banned.isList())
 			{
 				String[] items = banned.getStringList();
@@ -63,7 +63,7 @@ public class Configuration
 			}
 
 			Property whitelist = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Item whitelist", new String[] { });
-			whitelist.comment = "If not empty, these items will be only ones that drop from clover. Formatted like other lists in this config. Supports item names and numeric IDs (support for numeric IDs will be removed in near future)!";
+			whitelist.comment = "If not empty, these items will be only ones that drop from clover. Formatted like other lists in this config. Supports item names (like minecraft:dirt) and numeric IDs (support for numeric IDs will be removed in near future)!";
 			if (whitelist.isList())
 			{
 				String[] items = whitelist.getStringList();

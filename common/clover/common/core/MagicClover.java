@@ -17,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Random;
 
-@Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = References.MOD_VERSION, useMetadata = true)
+@Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = "@VERSION@", useMetadata = true)
 public class MagicClover
 {
 	@SidedProxy(clientSide = References.CLIENT_PROXY, serverSide = References.COMMON_PROXY)
