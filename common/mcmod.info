@@ -2,9 +2,9 @@
 {
   "modid": "MagicClover",
   "name": "Magic Clover",
-  "description": "Clover is random drop from grass. When you SHIFT+RightClick it, random item (or block) will be dropped on the ground in front of you. This item works in dispenser! This item is food, you can eat it!",
-  "version": "@VERSION@",
+  "description": "Clover is a random drop from the grass. When you SHIFT+RightClick on it, random item (or block) will be magically dropped on the ground in front of you. This item works in dispenser and is edible!",
+  "version": "0.4.1",
   "authors": ["konwboj"],
-  "url": "http://www.minecraftforum.net/topic/1972119-"
+  "url": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1291695"
 }
 ]

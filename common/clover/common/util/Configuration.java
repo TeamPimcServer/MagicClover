@@ -1,13 +1,10 @@
 package clover.common.util;
 
 import clover.common.core.CommonProxy;
-import clover.common.core.MagicClover;
-import cpw.mods.fml.common.FMLLog;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Property;
 
 import java.io.File;
-import java.util.logging.Level;
 
 public class Configuration
 {
@@ -21,27 +18,69 @@ public class Configuration
 		{
 			config.load();
 
-			Property rareItems = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Rare Items", Registry.defaultRare);
-			rareItems.comment = "Rare item IDs";
-			if(rareItems.isIntList())
+			Property rare = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Rare Items", Registry.defaultRare);
+			rare.comment = "Supports item names and numeric IDs (support for numeric IDs will be removed in near future)!";
+			if (rare.isList())
 			{
-				int[] rItems = rareItems.getIntList();
+				String[] items = rare.getStringList();
 
-				for (int i : rItems)
+				for (String s : items)
 				{
-					Registry.registerRareItem(i);
+					try
+					{
+						int i = Integer.parseInt(s);
+						if (Item.getItemById(i) != null)
+						{
+							Registry.registerRareItem(Item.itemRegistry.getNameForObject(Item.getItemById(i)));
+						}
+					} catch (NumberFormatException e)
+					{
+						Registry.registerRareItem(s);
+					}
 				}
 			}
 
-			Property bannedItems = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Banned Items", Registry.defaultBanned);
-			bannedItems.comment = "Banned item IDs";
-			if(bannedItems.isIntList())
+			Property banned = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Banned Items", Registry.defaultBanned);
+			banned.comment = "Supports item names and numeric IDs (support for numeric IDs will be removed in near future)!";
+			if (banned.isList())
 			{
-				int[] bItems = bannedItems.getIntList();
+				String[] items = banned.getStringList();
 
-				for (int i : bItems)
+				for (String s : items)
 				{
-					Registry.registerBannedItem(i);
+					try
+					{
+						int i = Integer.parseInt(s);
+						if (Item.getItemById(i) != null)
+						{
+							Registry.registerBannedItem(Item.itemRegistry.getNameForObject(Item.getItemById(i)));
+						}
+					} catch (NumberFormatException e)
+					{
+						Registry.registerBannedItem(s);
+					}
+				}
+			}
+
+			Property whitelist = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Item whitelist", new String[] { });
+			whitelist.comment = "If not empty, these items will be only ones that drop from clover. Formatted like other lists in this config. Supports item names and numeric IDs (support for numeric IDs will be removed in near future)!";
+			if (whitelist.isList())
+			{
+				String[] items = whitelist.getStringList();
+
+				for (String s : items)
+				{
+					try
+					{
+						int i = Integer.parseInt(s);
+						if (Item.getItemById(i) != null)
+						{
+							Registry.addItem(Item.itemRegistry.getNameForObject(Item.getItemById(i)));
+						}
+					} catch (NumberFormatException e)
+					{
+						Registry.addItem(s);
+					}
 				}
 			}
 
@@ -49,12 +88,11 @@ public class Configuration
 			cloverID.comment = "Clover item ID";
 			CommonProxy.cloverID = cloverID.getInt();
 
-			Property chanceToDrop = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Chance to drop from grass", 11);
+			Property chanceToDrop = config.get(net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL, "Chance to drop from grass", 8);
 			chanceToDrop.comment = "Chance to drop clover from grass (10 is vanilla wheat seed chance)";
 			chance = chanceToDrop.getInt();
 		} catch (Exception e)
 		{
-
 		} finally
 		{
 			config.save();

@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
-
 import org.lwjgl.opengl.GL11;
 
 public class RenderCloverItem implements IItemRenderer
@@ -24,13 +23,7 @@ public class RenderCloverItem implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		if (type == ItemRenderType.ENTITY && !RenderItem.renderInFrame || type == ItemRenderType.EQUIPPED)
-		{
-			return true;
-		} else
-		{
-			return false;
-		}
+		return type == ItemRenderType.ENTITY && !RenderItem.renderInFrame || type == ItemRenderType.EQUIPPED;
 	}
 
 	@Override
@@ -43,7 +36,7 @@ public class RenderCloverItem implements IItemRenderer
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
 		GL11.glPushMatrix();
-		
+
 		switch (type)
 		{
 		case ENTITY:
@@ -57,7 +50,7 @@ public class RenderCloverItem implements IItemRenderer
 			break;
 		default:
 		}
-		
+
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 		model.renderAll();
 		GL11.glPopMatrix();
