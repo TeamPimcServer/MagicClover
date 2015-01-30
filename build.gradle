@@ -1,6 +1,5 @@
 buildscript {
-    repositories
-    {
+    repositories {
         mavenCentral()
         maven {
             name = "forge"
@@ -11,13 +10,23 @@ buildscript {
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
-    dependencies
-    {
-        classpath "net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT"
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
-apply plugin: "forge"
+apply plugin: 'forge'
+
+version = "0.6"
+group= "konwboj.clover"
+archivesBaseName = "magicclover"
+
+minecraft {
+	version = "1.8-11.14.0.1289-1.8"
+	mappings = "snapshot_nodoc_20141130"
+	replace "@VERSION@", project.version
+	replaceIn "MagicClover.java"
+}
 
 sourceSets
 {
@@ -28,22 +37,16 @@ sourceSets
     }
 }
 
-archivesBaseName = "magicclover"
-version = "0.5"
-
-minecraft {
-	version = "1.7.2-10.12.0.1047"
-	replace "@VERSION@", project.version
-	replaceIn "MagicClover.java"
-}
-
 processResources
 {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version':project.version
+        expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-		
+        
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }

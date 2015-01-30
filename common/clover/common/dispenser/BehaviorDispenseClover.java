@@ -1,6 +1,6 @@
 package clover.common.dispenser;
 
-import clover.common.core.MagicClover;
+import clover.MagicClover;
 import clover.common.util.Registry;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
@@ -18,8 +18,8 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 	@Override
 	protected ItemStack dispenseStack(IBlockSource source, ItemStack item)
 	{
-		EnumFacing enumfacing = BlockDispenser.func_149937_b(source.getBlockMetadata());
-		IPosition iposition = BlockDispenser.func_149939_a(source);
+		EnumFacing enumfacing = BlockDispenser.getFacing(source.getBlockMetadata());
+		IPosition iposition = BlockDispenser.getDispensePosition(source);
 		World world = source.getWorld();
 
 		if (!world.isRemote)
@@ -40,15 +40,5 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 		}
 
 		return item;
-	}
-
-	public boolean isBannedItem(String id)
-	{
-		return Registry.bannedItemIDs.contains(id);
-	}
-
-	public boolean isRareItem(String id)
-	{
-		return Registry.rareItemIDs.contains(id);
 	}
 }
