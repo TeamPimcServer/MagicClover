@@ -46,7 +46,6 @@ public class MagicClover
 		}
 
 		FMLCommonHandler.instance().bus().register(instance);
-
 		MinecraftForge.addGrassSeed(new ItemStack(clover, 1, 0), Config.chance);
 	}
 

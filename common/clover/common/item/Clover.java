@@ -41,9 +41,13 @@ public class Clover extends Item
 			} else
 			{
 				Item randomItem = Registry.getRandomItem();
+				ItemStack stack = new ItemStack(randomItem, 1, 0);
 
-				player.dropPlayerItemWithRandomChoice(new ItemStack(randomItem, 1, 0), true);
-				player.inventory.consumeInventoryItem(this);
+				if (stack.getItem() != null)
+				{
+					player.dropPlayerItemWithRandomChoice(stack, true);
+					player.inventory.consumeInventoryItem(this);
+				}
 			}
 		}
 
