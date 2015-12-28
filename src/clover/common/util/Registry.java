@@ -71,41 +71,22 @@ public class Registry
 
 	public static void load()
 	{
-		if (whitelistedItems.isEmpty())
+		forEachItem(new Predicate<Pair<Item, Integer>>()
 		{
-			forEachItem(new Predicate<Pair<Item, Integer>>()
+			@Override
+			public boolean apply(Pair<Item, Integer> item)
 			{
-				@Override
-				public boolean apply(Pair<Item, Integer> item)
-				{
-					String unlocalizedName = item.getLeft().getUnlocalizedName(new ItemStack(item.getLeft(), 1, item.getRight()));
-					String name = GameData.getItemRegistry().getNameForObject(item.getLeft());
-					String id = name + ":" + item.getRight();
-					boolean canTranslate = unlocalizedName != null && StatCollector.canTranslate(unlocalizedName + ".name");
+				String unlocalizedName = item.getLeft().getUnlocalizedName(new ItemStack(item.getLeft(), 1, item.getRight()));
+				String name = GameData.getItemRegistry().getNameForObject(item.getLeft());
+				String id = name + ":" + item.getRight();
+				boolean canTranslate = unlocalizedName != null && StatCollector.canTranslate(unlocalizedName + ".name");
 
-					if (!isBanned(id) && canTranslate)
-						items.add(id);
+				if (whitelistedItems.isEmpty() || isWhitelisted(id) && !isBanned(id) && canTranslate)
+					items.add(id);
 
-					return false;
-				}
-			});
-		} else
-		{
-			forEachItem(new Predicate<Pair<Item, Integer>>()
-			{
-				@Override
-				public boolean apply(Pair<Item, Integer> item)
-				{
-					String name = GameData.getItemRegistry().getNameForObject(item.getLeft());
-					String id = name + ":" + item.getRight();
-
-					if (isWhitelisted(id) && !isBanned(id))
-						items.add(id);
-
-					return false;
-				}
-			});
-		}
+				return false;
+			}
+		});
 
 		MagicClover.logger.log(Level.INFO, items.size() + " entries");
 	}
@@ -133,7 +114,7 @@ public class Registry
 		}
 	}
 
-	// Very hacky item dump here, don't look
+	// Very hacky item search code here, don't look
 	private static void forEachItem(Predicate<Pair<Item, Integer>> predicate)
 	{
 		for (Object obj : GameData.getItemRegistry())

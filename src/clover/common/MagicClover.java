@@ -8,8 +8,6 @@ import clover.common.util.Registry;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -30,7 +28,7 @@ import java.util.Random;
 @Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = "@VERSION@", useMetadata = true, guiFactory = References.GUI_FACTORY)
 public class MagicClover
 {
-	@Instance(References.MOD_ID)
+	@Mod.Instance(References.MOD_ID)
 	public static MagicClover instance;
 
 	public static StatBase cloversUsed = new StatBasic("stat.cloversUsed", new ChatComponentText("Clovers Used")).registerStat();
@@ -38,24 +36,21 @@ public class MagicClover
 	public static Random rand = new Random();
 	public static Logger logger = LogManager.getLogger(References.MOD_ID);
 
-	@EventHandler
+	@Mod.EventHandler
 	public static void preInit(FMLPreInitializationEvent event)
 	{
 		Config.init(event.getSuggestedConfigurationFile());
-
 		clover = new Clover();
 
 		if (event.getSide() == Side.CLIENT)
-		{
 			MinecraftForgeClient.registerItemRenderer(clover, new RenderCloverItem());
-		}
 	}
 
-	@EventHandler
+	@Mod.EventHandler
 	public static void init(FMLInitializationEvent event)
 	{
 		FMLCommonHandler.instance().bus().register(instance);
-		MinecraftForge.addGrassSeed(new ItemStack(clover, 1, 0), Config.dropChance);
+		MinecraftForge.addGrassSeed(new ItemStack(clover), Config.dropChance);
 	}
 
 	@Mod.EventHandler
