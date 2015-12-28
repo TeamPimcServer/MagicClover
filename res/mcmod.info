@@ -4,8 +4,8 @@
   "name": "Magic Clover",
   "description": "Clover is a random drop from grass. When you right-click it, random item (or block) will be magically dropped on the ground in front of you.",
   "version": "${version}",
-  "authors": ["konwboj"],
-  "authorList": ["konwboj"],
+  "authors": ["konwboy"],
+  "authorList": ["konwboy"],
   "logoFile": "logo.png"
 }
 ]

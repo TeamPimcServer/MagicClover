@@ -1,13 +1,11 @@
 package clover.common.dispenser;
 
-import clover.MagicClover;
+import clover.common.util.Config;
 import clover.common.util.Registry;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -18,25 +16,24 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 	@Override
 	protected ItemStack dispenseStack(IBlockSource source, ItemStack item)
 	{
-		EnumFacing enumfacing = BlockDispenser.getFacing(source.getBlockMetadata());
-		IPosition iposition = BlockDispenser.getDispensePosition(source);
 		World world = source.getWorld();
 
 		if (!world.isRemote)
 		{
-			int creeper = MagicClover.rand.nextInt(45);
+			EnumFacing enumfacing = BlockDispenser.getFacing(source.getBlockMetadata());
+			IPosition iposition = BlockDispenser.getDispensePosition(source);
 
-			if (creeper == 0)
+			if (world.getDifficulty().getDifficultyId() > 0 && Math.random() * 100 < Config.creeperChance)
 			{
-				ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), iposition.getX(), iposition.getY(), iposition.getZ());
+				ItemMonsterPlacer.spawnCreature(world, "Creeper", iposition.getX(), iposition.getY(), iposition.getZ());
 			} else
 			{
-				doDispense(world, new ItemStack(Registry.getRandomItem(), 1, 0), 0, enumfacing, iposition);
-				--item.stackSize;
+				ItemStack stack = Registry.getRandomItem();
+				if (stack.getItem() != null)
+					doDispense(world, stack, 0, enumfacing, iposition);
 			}
-		} else
-		{
-			this.dispenseStack(source, item);
+
+			--item.stackSize;
 		}
 
 		return item;

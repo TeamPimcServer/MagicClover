@@ -25,12 +25,8 @@ public class GuiModConfig extends GuiConfig
 		Iterator<String> iter = stringList.iterator();
 
 		while (iter.hasNext())
-		{
 			if (iter.next().startsWith(EnumChatFormatting.AQUA + ""))
-			{
 				iter.remove();
-			}
-		}
 
 		super.drawToolTip(stringList, x, y);
 	}
