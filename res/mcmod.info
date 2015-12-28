@@ -1,12 +1,11 @@
 [
 {
-  "modid": "MagicClover",
+  "modid": "magicclover",
   "name": "Magic Clover",
-  "description": "Clover is a random drop from the grass. When you SHIFT+RightClick it, random item (or block) will be magically dropped on the ground in front of you.",
+  "description": "Clover is a random drop from grass. When you right-click it, random item (or block) will be magically dropped on the ground in front of you.",
   "version": "${version}",
-  "authors": ["konwboj"],
-	"authorList": ["konwboj"],
-  "url": "http://bit.ly/1BXxrVY",
-	"logoFile": "logo.png"
+  "authors": ["konwboy"],
+  "authorList": ["konwboy"],
+  "logoFile": "logo.png"
 }
 ]

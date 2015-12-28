@@ -1,6 +1,6 @@
 package clover.common.dispenser;
 
-import clover.common.core.MagicClover;
+import clover.common.util.Config;
 import clover.common.util.Registry;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
@@ -24,31 +24,19 @@ public class BehaviorDispenseClover extends BehaviorDefaultDispenseItem
 
 		if (!world.isRemote)
 		{
-			int creeper = MagicClover.rand.nextInt(45);
-
-			if (creeper == 0)
+			if (world.difficultySetting.getDifficultyId() > 0 && Math.random() * 100 < Config.creeperChance)
 			{
 				ItemMonsterPlacer.spawnCreature(world, EntityList.getEntityID(new EntityCreeper(world)), iposition.getX(), iposition.getY(), iposition.getZ());
 			} else
 			{
-				doDispense(world, new ItemStack(Registry.getRandomItem(), 1, 0), 0, enumfacing, iposition);
-				--item.stackSize;
+				ItemStack stack = Registry.getRandomItem();
+				if (stack.getItem() != null)
+					doDispense(world, stack, 0, enumfacing, iposition);
 			}
-		} else
-		{
-			this.dispenseStack(source, item);
+
+			--item.stackSize;
 		}
 
 		return item;
-	}
-
-	public boolean isBannedItem(String id)
-	{
-		return Registry.bannedItemIDs.contains(id);
-	}
-
-	public boolean isRareItem(String id)
-	{
-		return Registry.rareItemIDs.contains(id);
 	}
 }

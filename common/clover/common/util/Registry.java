@@ -1,86 +1,195 @@
 package clover.common.util;
 
-import clover.common.core.MagicClover;
+import clover.common.MagicClover;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Registry
 {
-	public static List<String> bannedItemIDs = Lists.newArrayList();
-	public static List<String> rareItemIDs = Lists.newArrayList();
-	public static List<String> items = Lists.newArrayList();
+	private static List<String> bannedItems = Lists.newArrayList();
+	private static List<String> whitelistedItems = Lists.newArrayList();
+	private static List<String> rareItems = Lists.newArrayList();
+	private static List<String> items = Lists.newArrayList();
 
-	public static String[] defaultBanned = { "minecraft:flowing_lava", "minecraft:web", "minecraft:powered_comparator", "minecraft:water", "minecraft:flowing_water", "minecraft:lava", "minecraft:tripwire", "minecraft:farmland", "minecraft:unpowered_comparator", "minecraft:vine", "minecraft:standing_sign", "minecraft:bed", "minecraft:end_portal_frame", "minecraft:piston_extension", "minecraft:cauldron", "minecraft:pumpkin_stem", "minecraft:potatoes", "minecraft:unpowered_repeater", "minecraft:brewing_stand", "minecraft:melon_stem", "minecraft:end_portal", "minecraft:flower_pot", "minecraft:reeds", "minecraft:command_block", "minecraft:bedrock", "minecraft:piston_head", "minecraft:redstone_wire", "minecraft:wall_sign", "minecraft:nether_wart", "minecraft:spawn_egg", "minecraft:portal", "minecraft:iron_door", "minecraft:wheat", "minecraft:wooden_door", "minecraft:deadbush", "minecraft:mob_spawner", "minecraft:carrots", "minecraft:cocoa", "minecraft:powered_repeater", "minecraft:enchanted_book", "minecraft:tripwire_hook", "minecraft:netherrack", "minecraft:tallgrass", "minecraft:command_block_minecart" };
-	public static String[] defaultRare = { "minecraft:dragon_egg", "minecraft:beacon", "minecraft:nether_star", "minecraft:diamond_block", "minecraft:sponge", "minecraft:emerald_block", "minecraft:enchanting_table", "minecraft:end_portal_frame", "minecraft:ender_chest", "minecraft:jukebox", "minecraft:saddle", "minecraft:golden_apple", "minecraft:diamond_shovel", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:diamond_sword", "minecraft:diamond", "minecraft:emerald", "minecraft:ender_eye", "minecraft:diamond_helmet", "minecraft:diamond_chestplate", "minecraft:diamond_leggings", "minecraft:diamond_boots", "minecraft:diamond_hoe", "minecraft:gold_block", "minecraft:iron_block" };
+	private static final Pattern wildcard = Pattern.compile("(?<!\\w)\\*");
+	private static final String regexWildcard = "[a-zA-Z0-9_]+";
 
-	public static void registerBannedItem(String id)
+	public static void registerBannedItem(String item)
 	{
-		if (Item.itemRegistry.containsKey(id) && !bannedItemIDs.contains(id))
+		if (item != null)
 		{
-			bannedItemIDs.add(id);
+			String[] parts = item.split(":");
+			if (parts.length == 2)
+				item += ":[0-9]+";
+
+			bannedItems.add(wildcard.matcher(item).replaceAll(regexWildcard));
 		}
 	}
 
-	public static void registerRareItem(String id)
+	public static void registerWhitelistItem(String item)
 	{
-		if (Item.itemRegistry.containsKey(id) && !rareItemIDs.contains(id) && !bannedItemIDs.contains(id))
+		if (item != null)
 		{
-			rareItemIDs.add(id);
+			String[] parts = item.split(":");
+			if (parts.length == 2)
+				item += ":[0-9]+";
+
+			whitelistedItems.add(wildcard.matcher(item).replaceAll(regexWildcard));
 		}
 	}
 
-	public static void addItem(String id)
+	public static void registerRareItem(String item)
 	{
-		if (Item.itemRegistry.containsKey(id) && !items.contains(id) && !bannedItemIDs.contains(id))
+		if (item != null)
 		{
-			items.add(id);
+			String[] parts = item.split(":");
+			if (parts.length == 2)
+				item += ":[0-9]+";
+
+			rareItems.add(wildcard.matcher(item).replaceAll(regexWildcard));
 		}
+	}
+
+	public static void clear()
+	{
+		bannedItems.clear();
+		whitelistedItems.clear();
+		rareItems.clear();
+		items.clear();
 	}
 
 	public static void load()
 	{
-		if (items.isEmpty())
+		if (whitelistedItems.isEmpty())
 		{
-			Set mcItems = Item.itemRegistry.getKeys();
-			Iterator<String> itemsIter = mcItems.iterator();
-
-			while (itemsIter.hasNext())
+			forEachItem(new Predicate<Pair<Item, Integer>>()
 			{
-				String s = itemsIter.next();
-				if (s != null && !s.isEmpty() && Item.itemRegistry.getObject(s) != null && !bannedItemIDs.contains(s))
+				@Override
+				public boolean apply(Pair<Item, Integer> item)
 				{
-					items.add(s);
+					String unlocalizedName = item.getLeft().getUnlocalizedName(new ItemStack(item.getLeft(), 1, item.getRight()));
+					String name = GameData.getItemRegistry().getNameForObject(item.getLeft());
+					String id = name + ":" + item.getRight();
+					boolean canTranslate = unlocalizedName != null && StatCollector.canTranslate(unlocalizedName + ".name");
+
+					if (!isBanned(id) && canTranslate)
+						items.add(id);
+
+					return false;
 				}
-			}
-		}
-	}
-
-	public static Item getRandomItem()
-	{
-		int randomID = MagicClover.rand.nextInt(Registry.items.size());
-		int rare = MagicClover.rand.nextInt(4);
-
-		if (!isRareItem(Registry.items.get(randomID)))
-		{
-			return (Item) Item.itemRegistry.getObject(Registry.items.get(randomID));
+			});
 		} else
 		{
-			if (rare == 1)
+			forEachItem(new Predicate<Pair<Item, Integer>>()
 			{
-				return (Item) Item.itemRegistry.getObject(Registry.items.get(randomID));
-			} else
-			{
+				@Override
+				public boolean apply(Pair<Item, Integer> item)
+				{
+					String name = GameData.getItemRegistry().getNameForObject(item.getLeft());
+					String id = name + ":" + item.getRight();
+
+					if (isWhitelisted(id) && !isBanned(id))
+						items.add(id);
+
+					return false;
+				}
+			});
+		}
+
+		MagicClover.logger.log(Level.INFO, items.size() + " entries");
+	}
+
+	public static ItemStack getRandomItem()
+	{
+		if (Registry.items.size() > 0)
+		{
+			int randomID = MagicClover.rand.nextInt(Registry.items.size());
+			String itemName = Registry.items.get(randomID);
+			String[] parts = itemName.split(":");
+			Item item = GameData.getItemRegistry().getObject(parts[0] + ":" + parts[1]);
+			int meta = Integer.parseInt(parts[2]);
+
+			if (!isRare(itemName))
+				return new ItemStack(item, 1, meta);
+			else if (MagicClover.rand.nextInt(5) == 1)
+				return new ItemStack(item, 1, meta);
+			else
 				return getRandomItem();
-			}
+
+		} else
+		{
+			return new ItemStack(Blocks.stone);
 		}
 	}
 
-	public static boolean isRareItem(String id)
+	// Very hacky item dump here, don't look
+	private static void forEachItem(Predicate<Pair<Item, Integer>> predicate)
 	{
-		return rareItemIDs.contains(id);
+		for (Object obj : GameData.getItemRegistry())
+		{
+			Item item = (Item) obj;
+			int meta = 0;
+
+			if (item.getHasSubtypes())
+			{
+				List<String> names = Lists.newArrayList();
+
+				while (meta < 15)
+				{
+					String current = item.getUnlocalizedName(new ItemStack(item, 1, meta));
+					String next = item.getUnlocalizedName(new ItemStack(item, 1, meta + 1));
+
+					if (current != null && next != null && !names.contains(next) && !item.getUnlocalizedName(new ItemStack(item, 1, meta)).equals(item.getUnlocalizedName(new ItemStack(item, 1, meta + 1))))
+					{
+						names.add(current);
+						meta++;
+					} else
+					{
+						break;
+					}
+				}
+			}
+
+			for (int i = 0; i <= meta; i++)
+				predicate.apply(new ImmutablePair<Item, Integer>(item, i));
+		}
+	}
+
+	private static boolean isBanned(String item)
+	{
+		for (String entry : bannedItems)
+			if (item.matches(entry))
+				return true;
+
+		return false;
+	}
+
+	private static boolean isWhitelisted(String item)
+	{
+		for (String entry : whitelistedItems)
+			if (item.matches(entry))
+				return true;
+
+		return false;
+	}
+
+	private static boolean isRare(String item)
+	{
+		for (String entry : rareItems)
+			if (item.matches(entry))
+				return true;
+
+		return false;
 	}
 }

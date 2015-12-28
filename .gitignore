@@ -1,6 +1,6 @@
-*.jar
 /.gradle
 /build
+*.jar
 *.txt
 *.xml
 *.properties
