@@ -1,4 +1,4 @@
-MagicClover
+Magic Clover
 ============
 
 Four-leaf clover mod for Minecraft  
