@@ -23,7 +23,7 @@ public class Clover extends Item
 		GameRegistry.registerItem(this, "clover");
 		setUnlocalizedName("clover");
 		setTextureName("magicclover:clover");
-		setCreativeTab(CreativeTabs.tabFood);
+		setCreativeTab(CreativeTabs.tabMaterials);
 
 		BlockDispenser.dispenseBehaviorRegistry.putObject(this, behavior);
 	}
