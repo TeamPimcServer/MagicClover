@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameData;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Level;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class Registry
 {
@@ -81,7 +83,7 @@ public class Registry
 				String id = name + ":" + item.getRight();
 				boolean canTranslate = unlocalizedName != null && StatCollector.canTranslate(unlocalizedName + ".name");
 
-				if (whitelistedItems.isEmpty() || isWhitelisted(id) && !isBanned(id) && canTranslate)
+				if ((whitelistedItems.isEmpty() || isWhitelisted(id)) && !isBanned(id) && canTranslate)
 					items.add(id);
 
 				return false;
@@ -98,7 +100,7 @@ public class Registry
 			int randomID = MagicClover.rand.nextInt(Registry.items.size());
 			String itemName = Registry.items.get(randomID);
 			String[] parts = itemName.split(":");
-			Item item = GameData.getItemRegistry().getObject(parts[0] + ":" + parts[1]);
+			Item item = GameData.getItemRegistry().getObject(new ResourceLocation(parts[0] + ":" + parts[1]));
 			int meta = Integer.parseInt(parts[2]);
 
 			if (!isRare(itemName))
@@ -128,10 +130,28 @@ public class Registry
 
 				while (meta < 15)
 				{
-					String current = item.getUnlocalizedName(new ItemStack(item, 1, meta));
-					String next = item.getUnlocalizedName(new ItemStack(item, 1, meta + 1));
+					String current;
+					String next;
 
-					if (current != null && next != null && !names.contains(next) && !item.getUnlocalizedName(new ItemStack(item, 1, meta)).equals(item.getUnlocalizedName(new ItemStack(item, 1, meta + 1))))
+					// Apparently there are mods that don't do safety checks in getUnlocalizedName :/
+					try
+					{
+						current = item.getUnlocalizedName(new ItemStack(item, 1, meta));
+					} catch (Exception e)
+					{
+						meta--;
+						break;
+					}
+
+					try
+					{
+						next = item.getUnlocalizedName(new ItemStack(item, 1, meta + 1));
+					} catch (Exception e)
+					{
+						break;
+					}
+
+					if (current != null && next != null && !names.contains(next) && !current.equals(next))
 					{
 						names.add(current);
 						meta++;
@@ -150,8 +170,15 @@ public class Registry
 	private static boolean isBanned(String item)
 	{
 		for (String entry : bannedItems)
-			if (item.matches(entry))
+			try
+			{
+				if (item.matches(entry))
+					return true;
+			} catch (PatternSyntaxException e)
+			{
+				MagicClover.logger.log(Level.WARN, "Item " + item + " has bad characters in it's internal name, silently omitting it.");
 				return true;
+			}
 
 		return false;
 	}
@@ -159,8 +186,14 @@ public class Registry
 	private static boolean isWhitelisted(String item)
 	{
 		for (String entry : whitelistedItems)
-			if (item.matches(entry))
-				return true;
+			try
+			{
+				if (item.matches(entry))
+					return true;
+			} catch (PatternSyntaxException e)
+			{
+				MagicClover.logger.log(Level.WARN, "Item " + item + " has bad characters in it's internal name, silently omitting it.");
+			}
 
 		return false;
 	}
@@ -168,8 +201,14 @@ public class Registry
 	private static boolean isRare(String item)
 	{
 		for (String entry : rareItems)
-			if (item.matches(entry))
-				return true;
+			try
+			{
+				if (item.matches(entry))
+					return true;
+			} catch (PatternSyntaxException e)
+			{
+				MagicClover.logger.log(Level.WARN, "Item " + item + " has bad characters in it's internal name, silently omitting it.");
+			}
 
 		return false;
 	}

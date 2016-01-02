@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
-@Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = "@VERSION@", useMetadata = true, guiFactory = References.GUI_FACTORY)
+@Mod(modid = References.MOD_ID, name = References.MOD_NAME, version = "@VERSION@", useMetadata = true, guiFactory = References.GUI_FACTORY, acceptedMinecraftVersions="[1.8,1.8.8]")
 public class MagicClover
 {
 	@Mod.Instance(References.MOD_ID)
