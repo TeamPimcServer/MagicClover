@@ -2,7 +2,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 
-version = "1.8-0.7.1"
+version = "1.8-0.7.2"
 group= "konwboj.clover"
 archivesBaseName = "magicclover"
 
