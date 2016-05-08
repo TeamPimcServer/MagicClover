@@ -7,8 +7,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -79,9 +80,10 @@ public class Registry
 			public boolean apply(Pair<Item, Integer> item)
 			{
 				String unlocalizedName = item.getLeft().getUnlocalizedName(new ItemStack(item.getLeft(), 1, item.getRight()));
-				String name = GameData.getItemRegistry().getNameForObject(item.getLeft()).toString();
+				String name = Item.REGISTRY.getNameForObject(item.getLeft()).toString();
 				String id = name + ":" + item.getRight();
-				boolean canTranslate = unlocalizedName != null && StatCollector.canTranslate(unlocalizedName + ".name");
+
+				boolean canTranslate = unlocalizedName != null && I18n.canTranslate(unlocalizedName + ".name");
 
 				if ((whitelistedItems.isEmpty() || isWhitelisted(id)) && !isBanned(id) && canTranslate)
 					items.add(id);
@@ -100,7 +102,7 @@ public class Registry
 			int randomID = MagicClover.rand.nextInt(Registry.items.size());
 			String itemName = Registry.items.get(randomID);
 			String[] parts = itemName.split(":");
-			Item item = GameData.getItemRegistry().getObject(new ResourceLocation(parts[0] + ":" + parts[1]));
+			Item item = Item.REGISTRY.getObject(new ResourceLocation(parts[0] + ":" + parts[1]));
 			int meta = Integer.parseInt(parts[2]);
 
 			if (!isRare(itemName))
@@ -112,14 +114,14 @@ public class Registry
 
 		} else
 		{
-			return new ItemStack(Blocks.stone);
+			return new ItemStack(Blocks.STONE);
 		}
 	}
 
 	// Very hacky item search code here, don't look
 	private static void forEachItem(Predicate<Pair<Item, Integer>> predicate)
 	{
-		for (Object obj : GameData.getItemRegistry())
+		for (Object obj : Item.REGISTRY)
 		{
 			Item item = (Item) obj;
 			int meta = 0;

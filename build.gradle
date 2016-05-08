@@ -1,17 +1,32 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+
 plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 
-version = "1.8-0.7.2"
+version = "1.9-0.7.3"
 group= "konwboj.clover"
 archivesBaseName = "magicclover"
 
 minecraft {
-	version = "1.8-11.14.4.1563"
-  mappings = "snapshot_20141130"
+	version = "1.9-12.16.1.1892"
+    mappings = "snapshot_20160508"
 	replace "@VERSION@", project.version
 	replaceIn "MagicClover.java"
 	makeObfSourceJar = false
+    runDir = "build/run"
 }
 
 sourceSets

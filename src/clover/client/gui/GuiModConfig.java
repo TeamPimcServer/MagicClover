@@ -3,7 +3,7 @@ package clover.client.gui;
 import clover.common.util.Config;
 import clover.common.util.References;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.GuiConfig;
@@ -25,7 +25,8 @@ public class GuiModConfig extends GuiConfig
 		Iterator<String> iter = stringList.iterator();
 
 		while (iter.hasNext())
-			if (iter.next().startsWith(EnumChatFormatting.AQUA + ""))
+
+			if (iter.next().startsWith(TextFormatting.AQUA + ""))
 				iter.remove();
 
 		super.drawToolTip(stringList, x, y);
